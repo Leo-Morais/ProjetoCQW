@@ -29,7 +29,7 @@ namespace ProjetoCQW.Service
             }
         }
 
-        //Atualiza Nome da Montadora.
+        //Atualiza Nome e/ou url da Montadora.
         public Montadora Update(int id, string nome, string urlSite)
         {
             var montadora = _context.Montadoras.Find(id);
@@ -57,6 +57,11 @@ namespace ProjetoCQW.Service
         public List<Montadora> Get()
         {
             return _context.Montadoras.ToList();
+        }
+
+        public Montadora? Get(int montadoraId)
+        {
+            return _context.Montadoras.Find(montadoraId);
         }
 
 
