@@ -4,6 +4,7 @@ using ProjetoCQW.Model;
 using ProjetoCQW.Repository;
 using ProjetoCQW.Service;
 using ProjetoCQW.DTO;
+using ProjetoCQW.CustomExceptions;
 
 namespace ProjetoCQW.Controllers
 {
@@ -35,12 +36,21 @@ namespace ProjetoCQW.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ModeloCarroDTO modeloCarroDTO)
         {
-            var updatedCarro = await _modeloCarroService.Update(id, modeloCarroDTO);
-            if (updatedCarro == null)
+            try
             {
-                return NotFound();
+                var updatedCarro = await _modeloCarroService.Update(id, modeloCarroDTO);
+                return Ok(updatedCarro);
             }
-            return Ok(updatedCarro);
+            catch (IdNotFoundException infe)
+            {
+                return NotFound(infe.Message);
+            }
+            catch (WrongPropertyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+           
         }
 
 

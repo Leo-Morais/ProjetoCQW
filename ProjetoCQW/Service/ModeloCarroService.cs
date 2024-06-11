@@ -2,6 +2,7 @@
 using ProjetoCQW.Model;
 using ProjetoCQW.DTO;
 using Microsoft.EntityFrameworkCore;
+using ProjetoCQW.CustomExceptions;
 
 namespace ProjetoCQW.Service
 {
@@ -57,30 +58,49 @@ namespace ProjetoCQW.Service
 
         public async Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarroDTO)
         {
-            var modeloCarro = await _context.ModeloCarros.FindAsync(id);
-            if (modeloCarro == null) 
-            {
-                return null;
-            } 
 
-            if (modeloCarroDTO.Montadora_Id != null)
+            if (id == 0)
             {
-                var montadora =  _montadoraService.Get(modeloCarroDTO.Montadora_Id);
-                if (montadora == null) return null;
-                modeloCarro.Montadora = montadora;
-                modeloCarro.Montadora_Id = montadora.id;
+                throw new IdNotFoundException("Id inválido");
             }
 
-            if (modeloCarroDTO.Ano != null)
-                modeloCarro.Ano = modeloCarroDTO.Ano;
-            if (!string.IsNullOrEmpty(modeloCarroDTO.Nome))
-                modeloCarro.Nome = modeloCarroDTO.Nome;
-            if (!string.IsNullOrEmpty(modeloCarroDTO.Cor))
-                modeloCarro.Cor = modeloCarroDTO.Cor;
-            if (modeloCarroDTO.Valor != null)
-                modeloCarro.Valor = modeloCarroDTO.Valor;
-            if (!string.IsNullOrEmpty(modeloCarroDTO.Versao))
-                modeloCarro.Versao = modeloCarroDTO.Versao;
+            if (modeloCarroDTO.Nome == null || modeloCarroDTO.Nome == string.Empty)
+            {
+                throw new WrongPropertyException("Nome Inválido");
+            }
+
+            if (modeloCarroDTO.Ano == 0)
+            {
+                throw new WrongPropertyException("Data Inválida");
+            }
+
+            if(modeloCarroDTO.Cor == null || modeloCarroDTO.Cor == string.Empty)
+            {
+                throw new WrongPropertyException("Cor Inválida");
+            }
+
+            if (modeloCarroDTO.Versao == null || modeloCarroDTO.Versao == string.Empty)
+            {
+                throw new WrongPropertyException("Versão Inválida");
+            }
+
+            if (modeloCarroDTO.Valor == 0)
+            {
+                throw new WrongPropertyException("Valor Inválido");
+            }
+            
+            if (modeloCarroDTO.Montadora_Id == 0)
+            {
+                throw new IdNotFoundException("Montadora Id inválido");
+            }
+
+            var modeloCarro = _context.ModeloCarros.Find(id) ?? throw new Exception("Id não encontrado");
+
+            modeloCarro.Nome = modeloCarroDTO.Nome;
+            modeloCarro.Ano = modeloCarroDTO.Ano;
+            modeloCarro.Valor = modeloCarroDTO.Valor;
+            modeloCarro.Cor = modeloCarroDTO.Cor;
+            modeloCarro.Versao = modeloCarroDTO.Versao;
 
             modeloCarro.DataAtualizacao = DateTime.Now;
 

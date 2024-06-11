@@ -41,6 +41,7 @@ namespace ProjetoCQW.Repository
             modelBuilder.Entity<ModeloCarro>().Property(x => x.DataAtualizacao).HasColumnName("DataAtualizacao");
             modelBuilder.Entity<ModeloCarro>().Property(x => x.Montadora_Id).HasColumnName("Montadora_Id");
             modelBuilder.Entity<ModeloCarro>().HasOne(x => x.Montadora).WithOne().HasForeignKey<Montadora>(e => e.id).HasPrincipalKey<ModeloCarro>(e => e.Montadora_Id).IsRequired();
+            modelBuilder.Entity<ModeloCarro>().Navigation(x => x.Montadora).AutoInclude();
 
             //Mapeamento de ModeloSiteDetalhes
         }
