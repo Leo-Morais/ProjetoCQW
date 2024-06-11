@@ -1,16 +1,18 @@
-﻿using ProjetoCQW.Model;
+﻿using ProjetoCQW.DTO;
+using ProjetoCQW.Model;
+
 
 namespace ProjetoCQW.Service
 {
     public interface IMontadoraService
     {
-        void Add(Montadora montadora);
+        Task<Montadora> Add(MontadoraDTO montadoraDTO);
 
-        void Delete(int id);
+        Task Delete(int id);
 
-        Montadora Update(int id, string nome = null, string urlSite = null);
+        Task<Montadora> Update(int id, string nome = null, string urlSite = null);
 
-        List<Montadora> Get();
+        Task<List<Montadora>> Get();
 
         Montadora Get(int montadoraId);
     }

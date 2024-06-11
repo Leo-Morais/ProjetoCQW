@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjetoCQW.Model;
 using ProjetoCQW.Repository;
 using ProjetoCQW.Service;
-using ProjetoCQW.ViewModel;
+using ProjetoCQW.DTO;
 
 namespace ProjetoCQW.Controllers
 {
@@ -27,16 +27,27 @@ namespace ProjetoCQW.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var modeloCarro = _modeloCarroService.Get();
+            var modeloCarro = await _modeloCarroService.Get();
             return Ok(modeloCarro);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ModeloCarroDTO modeloCarroDTO)
+        {
+            var updatedCarro = await _modeloCarroService.Update(id, modeloCarroDTO);
+            if (updatedCarro == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedCarro);
+        }
+
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _modeloCarroService.Delete(id);
+            await _modeloCarroService.Delete(id);
             return Ok();
         }
     }

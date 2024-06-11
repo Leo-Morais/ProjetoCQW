@@ -20,7 +20,6 @@ namespace ProjetoCQW.Model
             this.Versao = versao;
             this.DataCriacao = DateTime.Now;
             this.DataAtualizacao = DateTime.Now;
-            //this.Montadora_Id = montadoraId;
         }
 
         public int Ano { get; set; }

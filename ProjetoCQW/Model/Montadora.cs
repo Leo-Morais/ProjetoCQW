@@ -7,10 +7,12 @@ namespace ProjetoCQW.Model
     public class Montadora : EntidadeBase
     {
 
-        public string Nome { get;  set; }
+        public required string  Nome { get;  set; }
         
-        public string UrlSite { get; set; }
+        public required string UrlSite { get; set; }
 
+
+        public Montadora() { }
 
         public Montadora(string nome, string urlSite)
         {

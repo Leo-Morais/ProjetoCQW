@@ -1,5 +1,5 @@
 ﻿using ProjetoCQW.Model;
-using ProjetoCQW.ViewModel;
+using ProjetoCQW.DTO;
 
 namespace ProjetoCQW.Service
 {
@@ -7,10 +7,10 @@ namespace ProjetoCQW.Service
     {
         Task<ModeloCarro> Add(ModeloCarroDTO modeloCarro);
 
-        void Delete(int id);
+        Task Delete(int id);
 
-        //ModeloCarro Update();
+        Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarro);
 
-        List<ModeloCarro> Get();
+        Task<List<ModeloCarro>> Get();
     }
 }

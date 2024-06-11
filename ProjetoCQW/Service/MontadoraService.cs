@@ -1,4 +1,8 @@
-﻿using ProjetoCQW.Model;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using ProjetoCQW.CustomExceptions;
+using ProjetoCQW.DTO;
+using ProjetoCQW.Model;
 using ProjetoCQW.Repository;
 
 namespace ProjetoCQW.Service
@@ -12,51 +16,68 @@ namespace ProjetoCQW.Service
         }
 
         //Adiciona uma nova Montadora no banco de dados.
-        public void Add(Montadora montadora)
+        public async Task<Montadora> Add(MontadoraDTO montadoraDto)
         {
-            _context.Montadoras.Add(montadora);
-            _context.SaveChanges();
+            var montadora = new Montadora()
+            {
+                Nome = montadoraDto.Name,
+                UrlSite = montadoraDto.UrlSite,
+                DataCriacao = DateTime.Now,
+                DataAtualizacao = DateTime.Now,
+            };
+
+            await _context.Montadoras.AddAsync(montadora);
+            await _context.SaveChangesAsync();
+
+            return montadora;
         }
 
         //Deleta a informação dentro da tabela recebendo o id por parâmetro.
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var montadora = _context.Montadoras.Find(id);
+            var montadora = await _context.Montadoras.FindAsync(id);
             if (montadora != null)
             {
                 _context.Montadoras.Remove(montadora);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
+           
         }
 
         //Atualiza Nome e/ou url da Montadora.
-        public Montadora Update(int id, string nome, string urlSite)
+        public async Task<Montadora> Update(int id, string nome, string urlSite)
         {
-            var montadora = _context.Montadoras.Find(id);
-            if (montadora == null)
+
+            if (nome == null || nome == string.Empty)
             {
-                return null;
+                throw new WrongPropertyException("Nome inválido");
             }
-            if (!string.IsNullOrEmpty(nome))
+
+            if (urlSite == null || urlSite == string.Empty)
             {
-                montadora.Nome = nome;
+                throw new WrongPropertyException("UrlSite inválido");
             }
-            
-            if (!string.IsNullOrEmpty(urlSite))
+
+            if (id == 0)
             {
-                montadora.UrlSite = urlSite;
+                throw new IdNotFoundException("Id inválido");
             }
+
+
+            var montadora =  _context.Montadoras.Find(id) ?? throw new Exception("Id não encontrado.");
+            montadora.Nome = nome;
+            montadora.UrlSite = urlSite;    
             montadora.DataAtualizacao = DateTime.Now;
-            _context.Montadoras.Update(montadora);
-            _context.SaveChanges();
+             _context.Montadoras.Update(montadora);
+            await _context.SaveChangesAsync();
 
             return montadora;
         }
 
         //Retorna a lista de Montadora
-        public List<Montadora> Get()
+        public async Task<List<Montadora>> Get()
         {
-            return _context.Montadoras.ToList();
+            return await _context.Montadoras.ToListAsync();
         }
 
         public Montadora? Get(int montadoraId)

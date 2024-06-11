@@ -1,6 +1,7 @@
 ﻿using ProjetoCQW.Repository;
 using ProjetoCQW.Model;
-using ProjetoCQW.ViewModel;
+using ProjetoCQW.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoCQW.Service
 {
@@ -39,19 +40,54 @@ namespace ProjetoCQW.Service
             return carro;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var modeloCarros = _context.ModeloCarros.Find(id);
+            var modeloCarros = await _context.ModeloCarros.FindAsync(id);
             if(modeloCarros != null) 
             {
                 _context.Remove(modeloCarros);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public List<ModeloCarro> Get()
+        public async Task<List<ModeloCarro>> Get()
         {
-             return _context.ModeloCarros.ToList();
+             return await _context.ModeloCarros.ToListAsync();
+        }
+
+        public async Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarroDTO)
+        {
+            var modeloCarro = await _context.ModeloCarros.FindAsync(id);
+            if (modeloCarro == null) 
+            {
+                return null;
+            } 
+
+            if (modeloCarroDTO.Montadora_Id != null)
+            {
+                var montadora =  _montadoraService.Get(modeloCarroDTO.Montadora_Id);
+                if (montadora == null) return null;
+                modeloCarro.Montadora = montadora;
+                modeloCarro.Montadora_Id = montadora.id;
+            }
+
+            if (modeloCarroDTO.Ano != null)
+                modeloCarro.Ano = modeloCarroDTO.Ano;
+            if (!string.IsNullOrEmpty(modeloCarroDTO.Nome))
+                modeloCarro.Nome = modeloCarroDTO.Nome;
+            if (!string.IsNullOrEmpty(modeloCarroDTO.Cor))
+                modeloCarro.Cor = modeloCarroDTO.Cor;
+            if (modeloCarroDTO.Valor != null)
+                modeloCarro.Valor = modeloCarroDTO.Valor;
+            if (!string.IsNullOrEmpty(modeloCarroDTO.Versao))
+                modeloCarro.Versao = modeloCarroDTO.Versao;
+
+            modeloCarro.DataAtualizacao = DateTime.Now;
+
+            _context.ModeloCarros.Update(modeloCarro);
+            await _context.SaveChangesAsync();
+
+            return modeloCarro;
         }
     }
 }

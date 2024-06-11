@@ -1,4 +1,4 @@
-﻿namespace ProjetoCQW.ViewModel
+﻿namespace ProjetoCQW.DTO
 {
     public class ModeloCarroDTO
     {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoCQW.Model;
 using ProjetoCQW.Service;
-using ProjetoCQW.ViewModel;
+using ProjetoCQW.DTO;
+using ProjetoCQW.CustomExceptions;
 
 namespace ProjetoCQW.Controllers
 {
@@ -18,38 +19,44 @@ namespace ProjetoCQW.Controllers
 
         //Rota para cadastrar montadora no banco
         [HttpPost]
-        public IActionResult Add([FromForm] MontadoraViewModel montadoraView)
+        public async Task<IActionResult> AddAsync([FromForm] MontadoraDTO montadoraDTO)
         {
-            var montadora = new Montadora(montadoraView.Name, montadoraView.UrlSite);
-            _montadoraService.Add(montadora);
-            return Ok();
+            var montadora = await _montadoraService.Add(montadoraDTO);
+            return Ok(montadora);
         }
 
         //Rota para receber os dados
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var montadora = _montadoraService.Get();
+            var montadora = await _montadoraService.Get();
             return Ok(montadora);
         }
 
         //Rota de atualização
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] MontadoraViewModel montadoraView)
+        public async Task<IActionResult> Update(int id, [FromBody] MontadoraDTO montadoraDTO)
         {
-            var updatedMontadora = _montadoraService.Update(id, montadoraView.Name, montadoraView.UrlSite);
-            if (updatedMontadora == null)
+            try
             {
-                return NotFound();
+                var updatedMontadora = await _montadoraService.Update(id, montadoraDTO.Name, montadoraDTO.UrlSite);
+                return Ok(updatedMontadora);
             }
-            return Ok(updatedMontadora);
+            catch (IdNotFoundException infe)
+            {
+                return NotFound(infe.Message);
+            }catch (WrongPropertyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+   
         }
 
         //Rota de delete
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _montadoraService.Delete(id);
+            await _montadoraService.Delete(id);
             return Ok();
         }
 
