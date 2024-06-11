@@ -56,6 +56,11 @@ namespace ProjetoCQW.Service
              return await _context.ModeloCarros.ToListAsync();
         }
 
+        public ModeloCarro? Get(int modeloCarroId)
+        {
+            return _context.ModeloCarros.Find(modeloCarroId);
+        }
+
         public async Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarroDTO)
         {
 

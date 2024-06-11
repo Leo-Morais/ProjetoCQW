@@ -12,5 +12,7 @@ namespace ProjetoCQW.Service
         Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarro);
 
         Task<List<ModeloCarro>> Get();
+
+        ModeloCarro Get(int modeloCarroId);
     }
 }

@@ -12,6 +12,7 @@ namespace ProjetoCQW.Repository
 
         public DbSet<Montadora> Montadoras { get; set; }
         public DbSet<ModeloCarro> ModeloCarros { get; set; }
+        public DbSet<ModeloSiteDetalhe> ModeloSiteDetalhes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +45,23 @@ namespace ProjetoCQW.Repository
             modelBuilder.Entity<ModeloCarro>().Navigation(x => x.Montadora).AutoInclude();
 
             //Mapeamento de ModeloSiteDetalhes
+            modelBuilder.Entity<ModeloSiteDetalhe>().HasKey(k => k.id);
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(e => e.id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<ModeloSiteDetalhe>().ToTable("ModeloSiteDetalhe");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.UrlSite).HasColumnName("UrlSite");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathModelo).HasColumnName("XpathModelo");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathAno).HasColumnName("XpathAno");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathCor).HasColumnName("XpathCor");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathImg).HasColumnName("XpathImg");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathValor).HasColumnName("XpathValor");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.ModeloCarro_Id).HasColumnName("ModeloCarro_id");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.DataCriacao).HasColumnName("DataCriacao");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.DataAtualizacao).HasColumnName("DataAtualizacao");
+            modelBuilder.Entity<ModeloSiteDetalhe>().HasOne(x => x.ModeloCarro).WithOne().HasForeignKey<ModeloCarro>(e => e.id).
+                                                     HasPrincipalKey<ModeloSiteDetalhe>(e => e.ModeloCarro_Id).IsRequired();
+            modelBuilder.Entity<ModeloSiteDetalhe>().Navigation(x =>  x.ModeloCarro).AutoInclude();
+            
+
         }
 
     }
