@@ -74,3 +74,8 @@ C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\obj\Debug\net7.0\refint\Projet
 C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\obj\Debug\net7.0\ProjetoCQW.pdb
 C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\obj\Debug\net7.0\ProjetoCQW.genruntimeconfig.cache
 C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\obj\Debug\net7.0\ref\ProjetoCQW.dll
+C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\bin\Debug\net7.0\selenium-manager\linux\selenium-manager
+C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\bin\Debug\net7.0\selenium-manager\macos\selenium-manager
+C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\bin\Debug\net7.0\selenium-manager\windows\selenium-manager.exe
+C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\leovg\source\repos\ProjetoCQW\ProjetoCQW\bin\Debug\net7.0\WebDriver.dll
