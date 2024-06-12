@@ -10,15 +10,18 @@ namespace ProjetoCQW.Service
     {
         private readonly ConnectionContext _context;
         private readonly IMontadoraService _montadoraService;
-        public ModeloCarroService(ConnectionContext context, IMontadoraService montadoraService)
+        private readonly IModeloSiteDetalheService _modeloSiteDetalheService;
+        public ModeloCarroService(ConnectionContext context, IMontadoraService montadoraService, IModeloSiteDetalheService modeloSiteDetalheService)
         {
             _context = context;
             _montadoraService = montadoraService;
+            _modeloSiteDetalheService = modeloSiteDetalheService;
         }
 
         public async Task<ModeloCarro> Add(ModeloCarroDTO modeloCarro)
         {
             var montadora = _montadoraService.Get(modeloCarro.Montadora_Id);
+            var modeloSite = _modeloSiteDetalheService.Get(modeloCarro.ModeloSite_Id);
 
             var carro = new ModeloCarro()
             {
@@ -30,8 +33,8 @@ namespace ProjetoCQW.Service
                 Cor = modeloCarro.Cor,
                 Versao = modeloCarro.Versao,
                 Imagem = "imagem",
-                Montadora = montadora,
-                Montadora_Id = montadora.id
+                Montadora_Id = modeloCarro.Montadora_Id,
+                ModeloSite_Id = modeloCarro.ModeloSite_Id
             };
 
 
@@ -44,7 +47,7 @@ namespace ProjetoCQW.Service
         public async Task Delete(int id)
         {
             var modeloCarros = await _context.ModeloCarros.FindAsync(id);
-            if(modeloCarros != null) 
+            if (modeloCarros != null)
             {
                 _context.Remove(modeloCarros);
                 await _context.SaveChangesAsync();
@@ -53,13 +56,13 @@ namespace ProjetoCQW.Service
 
         public async Task<List<ModeloCarro>> Get()
         {
-             return await _context.ModeloCarros.ToListAsync();
+            return await _context.ModeloCarros.ToListAsync();
         }
 
-        public ModeloCarro? Get(int modeloCarroId)
-        {
-            return _context.ModeloCarros.Find(modeloCarroId);
-        }
+        //public ModeloCarro? Get(int modeloCarroId)
+        //{
+        //    return _context.ModeloCarros.Find(modeloCarroId);
+        //}
 
         public async Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarroDTO)
         {
@@ -79,7 +82,7 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("Data Inválida");
             }
 
-            if(modeloCarroDTO.Cor == null || modeloCarroDTO.Cor == string.Empty)
+            if (modeloCarroDTO.Cor == null || modeloCarroDTO.Cor == string.Empty)
             {
                 throw new WrongPropertyException("Cor Inválida");
             }
@@ -93,10 +96,15 @@ namespace ProjetoCQW.Service
             {
                 throw new WrongPropertyException("Valor Inválido");
             }
-            
+
             if (modeloCarroDTO.Montadora_Id == 0)
             {
                 throw new IdNotFoundException("Montadora Id inválido");
+            }
+
+            if (modeloCarroDTO.ModeloSite_Id == 0)
+            {
+                throw new IdNotFoundException("ModeloSite Id inválido");
             }
 
             var modeloCarro = _context.ModeloCarros.Find(id) ?? throw new Exception("Id não encontrado");

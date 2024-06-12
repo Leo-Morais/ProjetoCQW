@@ -9,5 +9,6 @@
         public string Versao { get; set; }
 
         public int Montadora_Id { get; set; }
+        public int ModeloSite_Id { get; set; }
     }
 }

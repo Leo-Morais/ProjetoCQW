@@ -23,7 +23,7 @@ namespace ProjetoCQW.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromForm] ModeloCarroDTO modeloCarroDTO)
         {
-            var  carro = await _modeloCarroService.Add(modeloCarroDTO);
+            var carro = await _modeloCarroService.Add(modeloCarroDTO);
             return Ok(carro);
         }
 
@@ -49,8 +49,8 @@ namespace ProjetoCQW.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
-           
+
+
         }
 
 

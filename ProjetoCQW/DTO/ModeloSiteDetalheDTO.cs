@@ -8,6 +8,6 @@
         public string XpathCor { get; set; }
         public string XpathImg { get; set; }
         public string XpathValor { get; set; }
-        public int ModeloCarro_Id { get; set; }
+        public int Montadora_Id { get; set; }
     }
 }

@@ -10,8 +10,8 @@ namespace ProjetoCQW.Model
     {
         public ModeloCarro() { }
 
-        public ModeloCarro(int ano, string nome,string versao, string imagem, string cor, float valor, int montadoraId)
-        { 
+        public ModeloCarro(int ano, string nome, string versao, string imagem, string cor, float valor, int montadoraId)
+        {
             this.Ano = ano;
             this.Nome = nome;
             this.Imagem = imagem;
@@ -31,8 +31,10 @@ namespace ProjetoCQW.Model
 
         //Ligar para foreign key
         public Montadora Montadora { get; set; }
+        public ModeloSiteDetalhe ModeloSiteDetalhe { get; set; }
         public int Montadora_Id { get; set; }
+        public int ModeloSite_Id { get; set; }
 
-        
+
     }
 }

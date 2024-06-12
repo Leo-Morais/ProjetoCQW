@@ -6,7 +6,7 @@ namespace ProjetoCQW.Model
     public class ModeloSiteDetalhe : EntidadeBase
     {
         public ModeloSiteDetalhe() { }
-       
+
         public ModeloSiteDetalhe(string url, string modelo, string ano, string cor, string img, string valor)
         {
             this.UrlSite = url;
@@ -27,9 +27,8 @@ namespace ProjetoCQW.Model
         public string XpathImg { get; set; }
         public string XpathValor { get; set; }
 
-        public ModeloCarro ModeloCarro { get; set; }
-        
-        public int ModeloCarro_Id { get; set; }
+        public Montadora Montadora { get; set; }
+        public int Montadora_Id { get; set; }
 
 
     }

@@ -13,6 +13,6 @@ namespace ProjetoCQW.Service
 
         Task<List<ModeloCarro>> Get();
 
-        ModeloCarro Get(int modeloCarroId);
+        //ModeloCarro Get(int modeloCarroId);
     }
 }

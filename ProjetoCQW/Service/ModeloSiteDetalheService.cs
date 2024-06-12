@@ -6,20 +6,20 @@ using ProjetoCQW.CustomExceptions;
 
 namespace ProjetoCQW.Service
 {
-   
+
     public class ModeloSiteDetalheService : IModeloSiteDetalheService
     {
         private readonly ConnectionContext _context;
-        private readonly IModeloCarroService _modeloCarroService;
-        public ModeloSiteDetalheService(ConnectionContext context, IModeloCarroService modeloCarroService)
+        private readonly IMontadoraService _montadoraService;
+        public ModeloSiteDetalheService(ConnectionContext context, IMontadoraService montadoraService)
         {
             _context = context;
-            _modeloCarroService = modeloCarroService;
+            _montadoraService = montadoraService;
         }
 
         public async Task<ModeloSiteDetalhe> Add(ModeloSiteDetalheDTO modeloSiteDetalhe)
         {
-            var modeloCarro =   _modeloCarroService.Get(modeloSiteDetalhe.ModeloCarro_Id);
+            var montadora = _montadoraService.Get(modeloSiteDetalhe.Montadora_Id);
 
             var modeloSite = new ModeloSiteDetalhe()
             {
@@ -31,8 +31,8 @@ namespace ProjetoCQW.Service
                 XpathValor = modeloSiteDetalhe.XpathValor,
                 DataCriacao = DateTime.Now,
                 DataAtualizacao = DateTime.Now,
-                ModeloCarro = modeloCarro,
-                ModeloCarro_Id = modeloCarro.id
+                Montadora = montadora,
+                Montadora_Id = montadora.id
             };
             await _context.AddAsync(modeloSite);
             await _context.SaveChangesAsync();
@@ -46,7 +46,7 @@ namespace ProjetoCQW.Service
             if (modeloSite != null)
             {
                 _context.Remove(modeloSite);
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -55,14 +55,19 @@ namespace ProjetoCQW.Service
             return await _context.ModeloSiteDetalhes.ToListAsync();
         }
 
+        public ModeloSiteDetalhe Get(int id)
+        {
+            return _context.ModeloSiteDetalhes.Find(id);
+        }
+
         public async Task<ModeloSiteDetalhe> Update(int id, ModeloSiteDetalheDTO modeloSiteDetalhe)
         {
-            if(id == 0)
+            if (id == 0)
             {
                 throw new IdNotFoundException("Id Inválido");
             }
 
-            if(modeloSiteDetalhe.XpathValor == null || modeloSiteDetalhe.XpathValor == string.Empty)
+            if (modeloSiteDetalhe.XpathValor == null || modeloSiteDetalhe.XpathValor == string.Empty)
             {
                 throw new WrongPropertyException("Valor Invalido");
             }
@@ -82,7 +87,7 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("Cor Invalido");
             }
 
-            if (modeloSiteDetalhe.XpathImg== null || modeloSiteDetalhe.XpathImg == string.Empty)
+            if (modeloSiteDetalhe.XpathImg == null || modeloSiteDetalhe.XpathImg == string.Empty)
             {
                 throw new WrongPropertyException("Imagem Invalida");
             }
@@ -92,7 +97,7 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("Url Invalida");
             }
 
-            if (modeloSiteDetalhe.ModeloCarro_Id == 0)
+            if (modeloSiteDetalhe.Montadora_Id == 0)
             {
                 throw new IdNotFoundException("ModeloCarro_Id Invalido");
             }
