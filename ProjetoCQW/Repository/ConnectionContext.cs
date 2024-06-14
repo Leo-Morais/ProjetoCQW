@@ -32,16 +32,14 @@ namespace ProjetoCQW.Repository
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(e => e.id).ValueGeneratedOnAdd();
             modelBuilder.Entity<ModeloSiteDetalhe>().ToTable("ModeloSiteDetalhe");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.UrlSite).HasColumnName("UrlSite");
+            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathNome).HasColumnName("XpathNome");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathModelo).HasColumnName("XpathModelo");
-            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathAno).HasColumnName("XpathAno");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathCor).HasColumnName("XpathCor");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathImg).HasColumnName("XpathImg");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.XpathValor).HasColumnName("XpathValor");
-            modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.Montadora_Id).HasColumnName("Montadora_id");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.DataCriacao).HasColumnName("DataCriacao");
             modelBuilder.Entity<ModeloSiteDetalhe>().Property(x => x.DataAtualizacao).HasColumnName("DataAtualizacao");
-            modelBuilder.Entity<ModeloSiteDetalhe>().HasOne(x => x.Montadora).WithOne().HasForeignKey<Montadora>(e => e.id).HasPrincipalKey<ModeloSiteDetalhe>(e => e.Montadora_Id).IsRequired();
-            modelBuilder.Entity<ModeloSiteDetalhe>().Navigation(x => x.Montadora).AutoInclude();
+
 
 
             //Mapeamento de ModeloCarros
@@ -58,12 +56,25 @@ namespace ProjetoCQW.Repository
             modelBuilder.Entity<ModeloCarro>().Property(x => x.DataAtualizacao).HasColumnName("DataAtualizacao");
             modelBuilder.Entity<ModeloCarro>().Property(x => x.Montadora_Id).HasColumnName("Montadora_Id");
             modelBuilder.Entity<ModeloCarro>().Property(x => x.ModeloSite_Id).HasColumnName("ModeloSite_Id");
-            modelBuilder.Entity<ModeloCarro>().HasOne(x => x.Montadora).WithOne().HasForeignKey<Montadora>(e => e.id).IsRequired();
-            modelBuilder.Entity<ModeloCarro>().HasOne(x => x.ModeloSiteDetalhe).WithOne().HasForeignKey<ModeloSiteDetalhe>(e => e.id).IsRequired();
+
+
+            modelBuilder.Entity<ModeloCarro>()
+                .HasOne(x => x.Montadora)
+                .WithOne()
+                .HasForeignKey<Montadora>(e => e.id)
+                .HasPrincipalKey<ModeloCarro>(c => c.Montadora_Id)
+                .OnDelete(DeleteBehavior.ClientNoAction);
+
+            modelBuilder.Entity<ModeloCarro>()
+                .HasOne(x => x.ModeloSiteDetalhe)
+                .WithOne()
+                .HasForeignKey<ModeloSiteDetalhe>(e => e.id)
+                .HasPrincipalKey<ModeloCarro>(c => c.ModeloSite_Id)
+                .OnDelete(DeleteBehavior.ClientNoAction);
+
+
             modelBuilder.Entity<ModeloCarro>().Navigation(x => x.Montadora).AutoInclude();
             modelBuilder.Entity<ModeloCarro>().Navigation(x => x.ModeloSiteDetalhe).AutoInclude();
-
-
 
         }
 

@@ -22,6 +22,6 @@ namespace ProjetoCQW.Model
             this.DataAtualizacao = DateTime.Now;
         }
 
-        //List<ModeloCarro> ModeloCarros { get; set; }    
+       
     }
 }

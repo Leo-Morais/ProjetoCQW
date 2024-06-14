@@ -1,63 +1,98 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Extensions.Options;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-
+using ProjetoCQW.DTO;
+using ProjetoCQW.Model;
+using ProjetoCQW.Repository;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoCQW.Service
 {
-        class Program
+    public class WebCrawlerService : IWebCrawlerService
+    {
+        private readonly ConnectionContext _context;
+        private readonly IModeloCarroService _modeloCarroService;
+        private readonly IModeloSiteDetalheService _modeloSiteDetalheService;
+
+        public WebCrawlerService(ConnectionContext context, IModeloCarroService modeloCarroService, IModeloSiteDetalheService modeloSiteDetalheService)
         {
-            static void Main(string[] args)
+            _context = context;
+            _modeloCarroService = modeloCarroService;
+            _modeloSiteDetalheService = modeloSiteDetalheService;
+        }
+
+        public async Task<ModeloCarro> Update(int modeloCarroID, int modeloSiteID)
+        {
+            var modeloCarro = await _context.ModeloCarros.FindAsync(modeloCarroID);
+            var modeloSite = await _context.ModeloSiteDetalhes.FindAsync(modeloSiteID);
+
+            var options = new ChromeOptions();
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("headless");
+            options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
+                               "AppleWebKit/537.36 (KHTML, like Gecko)" +
+                               "Chrome/87.0.4280.141 Safari/537.36");
+            options.AddArgument("--disable-logging");
+            options.AddArgument("--log-level=3");
+
+            using (IWebDriver driver = new ChromeDriver(options))
             {
-
-                String url = "https://www.toyota.com.br/modelos/yaris-hatch";
-
-                var options = new ChromeOptions();
-                options.AddArgument("--window-size=1920,1080");
-                options.AddArgument("headless");
-                options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
-                                   "AppleWebKit/537.36 (KHTML, like Gecko)" +
-                                   "Chrome/87.0.4280.141 Safari/537.36");
-                options.AddArgument("--disable-logging");
-                options.AddArgument("--log-level=3");
-
-
-                using (IWebDriver driver = new ChromeDriver(options))
+                var crawler = new WebCrawlerDTO
                 {
-                    driver.Navigate().GoToUrl(url);
+                    Cor = modeloSite.XpathCor,
+                    Imagem = modeloSite.XpathImg,
+                    Modelo = modeloSite.XpathModelo,
+                    Url = modeloSite.UrlSite,
+                    Valor = modeloSite.XpathValor,
+                    Nome = modeloSite.XpathNome,  
+                };
 
-                    System.Threading.Thread.Sleep(2000);
+      
 
-                    var fecharElement = driver.FindElement(By.XPath("//*[@id=\"onetrust-banner-sdk\"]/div/div/div[1]/button"));
-                    fecharElement.Click();
+                driver.Navigate().GoToUrl(crawler.Url);
 
-                    var modeloElement = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-0\"]/div[2]/section/div/section[1]/div[1]/p"));
-                    var modelo = modeloElement.Text.ToUpper().Trim();
-                    Console.WriteLine(modelo);
+                System.Threading.Thread.Sleep(2000);
 
-                    var colorElement = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-0\"]/div[2]/section/div/section[2]/div/div[1]/div[1]/div[2]/div[2]/span"));
-                    var color = colorElement.Text.ToUpper().Trim();
-                    Console.WriteLine(color);
+                var fecharElement = driver.FindElement(By.XPath("//*[@id=\"onetrust-banner-sdk\"]/div/div/div[1]/button"));
+                fecharElement.Click();
 
-                    var valorElement = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-0\"]/div[2]/section/div/section[2]/div/div[1]/div[3]/span[2]"));
-                    var valor = valorElement.Text.ToUpper().Trim();
-                    Console.WriteLine(valor);
+                var modeloElement = driver.FindElement(By.XPath(crawler.Nome));
+                var modeloEle = modeloElement.Text.ToUpper().Trim();
+                modeloCarro.Nome = modeloEle;
 
-                    var ImgElement = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-4\"]/section/ul/li[1]/div[1]/div/img"));
-                    String imgSrc = ImgElement.GetAttribute("src");
-                    Console.WriteLine(imgSrc);
+                var colorElement = driver.FindElement(By.XPath(crawler.Cor));
+                var color = colorElement.Text.ToUpper().Trim();
+                modeloCarro.Cor = color;
 
-                    var button = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-0\"]/div[2]/section/div/section[1]/div[2]/div/div/div/div/div[2]/div/div/button"));
-                    //Actions action = new Actions(driver);
-                    //action.MoveToElement(button).Perform();
-                    button.Click();
+                var valorElement = driver.FindElement(By.XPath(crawler.Valor));
+                var valor = valorElement.Text.ToUpper().Trim();
+                valor = valor.Replace("R$", "").Trim();
+                var valorFinal = float.Parse(valor);
+                modeloCarro.Valor = valorFinal;
 
-                    valorElement = driver.FindElement(By.XPath("//*[@id=\"dynamic-component-0\"]/div[2]/section/div/section[2]/div/div[1]/div[3]/span[2]"));
-                    valor = valorElement.Text.ToUpper().Trim();
-                    Console.WriteLine(valor);
-                }
+                var imgElement = driver.FindElement(By.XPath(crawler.Imagem));
+                string imgSrc = imgElement.GetAttribute("src");
+                modeloCarro.Imagem = imgSrc;
+
+                var versaoElement = driver.FindElement(By.XPath(crawler.Modelo));
+                var versao = versaoElement.Text.ToUpper().Trim();
+                modeloCarro.Versao = versao;
+
+                driver.Close();
+
+                 _context.ModeloCarros.Update(modeloCarro);
+                 await _context.SaveChangesAsync();
+
+                return modeloCarro;
             }
+
+            
         }
     }
+
+}  
+

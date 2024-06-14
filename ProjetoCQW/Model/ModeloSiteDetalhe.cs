@@ -7,28 +7,26 @@ namespace ProjetoCQW.Model
     {
         public ModeloSiteDetalhe() { }
 
-        public ModeloSiteDetalhe(string url, string modelo, string ano, string cor, string img, string valor)
+        public ModeloSiteDetalhe(string url, string modelo, string cor, string img, string valor, string nome)
         {
             this.UrlSite = url;
             this.XpathModelo = modelo;
-            this.XpathAno = ano;
             this.XpathCor = cor;
             this.XpathImg = img;
             this.XpathValor = valor;
+            this.XpathNome = nome;
             this.DataCriacao = DateTime.Now;
             this.DataAtualizacao = DateTime.Now;
 
         }
 
+        public string XpathNome { get; set; }
         public string UrlSite { get; set; }
         public string XpathModelo { get; set; }
-        public string XpathAno { get; set; }
         public string XpathCor { get; set; }
         public string XpathImg { get; set; }
         public string XpathValor { get; set; }
 
-        public Montadora Montadora { get; set; }
-        public int Montadora_Id { get; set; }
 
 
     }

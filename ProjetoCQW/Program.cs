@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ConnectionContext>(options =>
 builder.Services.AddTransient<IMontadoraService, MontadoraService>();
 builder.Services.AddTransient<IModeloCarroService, ModeloCarroService>();
 builder.Services.AddTransient<IModeloSiteDetalheService, ModeloSiteDetalheService>();
+builder.Services.AddTransient<IWebCrawlerService, WebCrawlerService>();
 
 var app = builder.Build();
 
