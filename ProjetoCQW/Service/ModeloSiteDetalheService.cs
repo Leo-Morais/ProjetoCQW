@@ -3,6 +3,7 @@ using ProjetoCQW.DTO;
 using ProjetoCQW.Model;
 using ProjetoCQW.Repository;
 using ProjetoCQW.CustomExceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ProjetoCQW.Service
 {

@@ -2,6 +2,8 @@
 using ProjetoCQW.CustomExceptions;
 using ProjetoCQW.DTO;
 using ProjetoCQW.Service;
+using System.Text;
+using System.Web;
 
 namespace ProjetoCQW.Controllers
 {
@@ -31,10 +33,11 @@ namespace ProjetoCQW.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ModeloSiteDetalheDTO modeloSiteDetalheDTO)
+        public async Task<IActionResult> Update(int id, ModeloSiteDetalheDTO modeloSiteDetalheDTO)
         {
             try
             {
+
                 var updateModelo = await _modeloSiteDetalheService.Update(id, modeloSiteDetalheDTO);
                 return Ok(updateModelo);
 

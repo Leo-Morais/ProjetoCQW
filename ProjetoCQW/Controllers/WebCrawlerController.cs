@@ -8,18 +8,25 @@ namespace ProjetoCQW.Controllers
     [Route("/api/v1/Crawler")]
     public class WebCrawlerController : ControllerBase
     {
-        private readonly IWebCrawlerService _webCrawlerService;
+        private readonly IWebCrawlerToyotaService _webCrawlerToyotaService;
 
-        public WebCrawlerController(IWebCrawlerService webCrawlerService)
+        public WebCrawlerController(IWebCrawlerToyotaService webCrawlerToyotaService)
         {
-            _webCrawlerService = webCrawlerService ?? throw new ArgumentNullException(nameof(webCrawlerService));
+            _webCrawlerToyotaService = webCrawlerToyotaService ?? throw new ArgumentNullException(nameof(webCrawlerToyotaService));
         }
-
+     
         [HttpPut]
+
         public async Task<IActionResult> Update(int modeloCarroID, int modeloSiteID)
         {
-           var crawlerUpdate = await _webCrawlerService.Update(modeloCarroID, modeloSiteID);
+           var crawlerUpdate = await _webCrawlerToyotaService.Update(modeloCarroID, modeloSiteID);
             return Ok(crawlerUpdate);
+        }
+        [HttpPut("/UpdateXS")]
+        public async Task<IActionResult> UpdateXS(int modeloCarroID, int modeloSiteID)
+        {
+            var crawlerUpdateXS = await _webCrawlerToyotaService.UpdateXS(modeloCarroID, modeloSiteID);
+            return Ok(crawlerUpdateXS);
         }
     }
 }
