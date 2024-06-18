@@ -4,6 +4,7 @@ using ProjetoCQW.Model;
 using ProjetoCQW.Repository;
 using ProjetoCQW.CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace ProjetoCQW.Service
 {
@@ -97,13 +98,14 @@ namespace ProjetoCQW.Service
 
             var modelo = _context.ModeloSiteDetalhes.Find(id) ?? throw new Exception("Id não encontrado");
 
-            modelo.XpathValor = modeloSiteDetalhe.XpathValor;
-            modelo.XpathCor = modeloSiteDetalhe.XpathCor;
-            modelo.XpathImg = modeloSiteDetalhe.XpathImg;
-            modelo.XpathModelo = modeloSiteDetalhe.XpathModelo;
-            modelo.UrlSite = modeloSiteDetalhe.UrlSite;
-            modelo.XpathNome = modeloSiteDetalhe.XpathNome;
+            modelo.XpathValor = HttpUtility.HtmlDecode(modeloSiteDetalhe.XpathValor);
+            modelo.XpathCor = HttpUtility.HtmlDecode(modeloSiteDetalhe.XpathCor);
+            modelo.XpathImg = HttpUtility.HtmlDecode(modeloSiteDetalhe.XpathImg);
+            modelo.XpathModelo = HttpUtility.HtmlDecode(modeloSiteDetalhe.XpathModelo);
+            modelo.UrlSite = HttpUtility.HtmlDecode(modeloSiteDetalhe.UrlSite);
+            modelo.XpathNome = HttpUtility.HtmlDecode(modeloSiteDetalhe.XpathNome);
             modelo.DataAtualizacao = DateTime.Now;
+
 
             _context.ModeloSiteDetalhes.Update(modelo);
             await _context.SaveChangesAsync();

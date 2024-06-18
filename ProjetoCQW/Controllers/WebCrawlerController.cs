@@ -22,11 +22,6 @@ namespace ProjetoCQW.Controllers
            var crawlerUpdate = await _webCrawlerToyotaService.Update(modeloCarroID, modeloSiteID);
             return Ok(crawlerUpdate);
         }
-        [HttpPut("/UpdateXS")]
-        public async Task<IActionResult> UpdateXS(int modeloCarroID, int modeloSiteID)
-        {
-            var crawlerUpdateXS = await _webCrawlerToyotaService.UpdateXS(modeloCarroID, modeloSiteID);
-            return Ok(crawlerUpdateXS);
-        }
+      
     }
 }

@@ -3,6 +3,7 @@ using ProjetoCQW.Model;
 using ProjetoCQW.DTO;
 using Microsoft.EntityFrameworkCore;
 using ProjetoCQW.CustomExceptions;
+using System.Web;
 
 namespace ProjetoCQW.Service
 {
