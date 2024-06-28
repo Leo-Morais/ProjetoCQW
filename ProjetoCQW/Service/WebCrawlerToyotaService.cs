@@ -28,12 +28,12 @@ namespace ProjetoCQW.Service
 
         public async Task<ModeloCarro> Update(int modeloCarroID, int modeloSiteID)
         {
-            if(modeloCarroID == 0)
+            if(modeloCarroID < 0)
             {
                 throw new IdNotFoundException("modeloCarroID inválido");
             }
 
-            if(modeloSiteID == 0)
+            if(modeloSiteID < 0)
             {
                 throw new IdNotFoundException("modeloSiteID inválido");
             }

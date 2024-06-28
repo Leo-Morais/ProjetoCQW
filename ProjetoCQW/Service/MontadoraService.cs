@@ -36,12 +36,14 @@ namespace ProjetoCQW.Service
         public async Task Delete(int id)
         {
             var montadora = await _context.Montadoras.FindAsync(id);
-            if (montadora != null)
+            if (montadora == null)
             {
-                _context.Montadoras.Remove(montadora);
-               await _context.SaveChangesAsync();
+                throw new IdNotFoundException($"Montadora com o ID {id} não encontrada.");
             }
-           
+
+            _context.Montadoras.Remove(montadora);
+            await _context.SaveChangesAsync();
+
         }
 
         //Atualiza Nome e/ou url da Montadora.
@@ -58,13 +60,18 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("UrlSite inválido");
             }
 
-            if (id == 0)
+            if (id < 0)
             {
                 throw new IdNotFoundException("Id inválido");
             }
 
 
-            var montadora =  _context.Montadoras.Find(id) ?? throw new Exception("Id não encontrado.");
+            var montadora = await _context.Montadoras.FindAsync(id);
+            if (montadora == null)
+            {
+                throw new IdNotFoundException($"Montadora com o ID {id} não encontrada.");
+            }
+
             montadora.Nome = nome;
             montadora.UrlSite = urlSite;    
             montadora.DataAtualizacao = DateTime.Now;
@@ -85,6 +92,14 @@ namespace ProjetoCQW.Service
             return _context.Montadoras.Find(montadoraId);
         }
 
-
+        public async Task<Montadora> GetById(int id)
+        {
+            var montadoraEncontrada = await _context.Montadoras.FindAsync(id);
+            if (montadoraEncontrada == null)
+            {
+                throw new IdNotFoundException($"Montadora com o ID {id} não encontrada.");
+            }
+            return montadoraEncontrada;
+        }
     }
 }

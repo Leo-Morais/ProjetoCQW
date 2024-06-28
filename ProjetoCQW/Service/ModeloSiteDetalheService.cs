@@ -60,7 +60,7 @@ namespace ProjetoCQW.Service
 
         public async Task<ModeloSiteDetalhe> Update(int id, ModeloSiteDetalheDTO modeloSiteDetalhe)
         {
-            if (id == 0)
+            if (id < 0)
             {
                 throw new IdNotFoundException("Id Inválido");
             }

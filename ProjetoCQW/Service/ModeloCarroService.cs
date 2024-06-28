@@ -98,12 +98,12 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("Valor Inválido");
             }
 
-            if (modeloCarroDTO.Montadora_Id == 0)
+            if (modeloCarroDTO.Montadora_Id < 0)
             {
                 throw new IdNotFoundException("Montadora Id inválido");
             }
 
-            if (modeloCarroDTO.ModeloSite_Id == 0)
+            if (modeloCarroDTO.ModeloSite_Id < 0)
             {
                 throw new IdNotFoundException("ModeloSite Id inválido");
             }
