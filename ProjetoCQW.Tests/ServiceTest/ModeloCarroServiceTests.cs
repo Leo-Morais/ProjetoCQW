@@ -75,6 +75,7 @@ namespace ProjetoCQW.Tests.ServiceTest
             Assert.Equal(carroDTO.Ano, result.Ano);
         }
 
+        [Fact]
         public async Task ModeloCarroService_Delete()
         {
             // Arrange

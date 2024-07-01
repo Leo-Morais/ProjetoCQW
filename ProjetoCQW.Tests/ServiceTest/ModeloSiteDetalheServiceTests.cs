@@ -14,8 +14,7 @@ using System.Xml.Linq;
 namespace ProjetoCQW.Tests.ServiceTest
 {
     public class ModeloSiteDetalheServiceTests
-    {
-       
+    {      
         private ConnectionContext GetInMemoryContext(string dbName)
         {
             var options = new DbContextOptionsBuilder<ConnectionContext>()
