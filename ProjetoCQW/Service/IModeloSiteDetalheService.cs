@@ -13,6 +13,6 @@ namespace ProjetoCQW.Service
 
         Task<List<ModeloSiteDetalhe>> Get();
 
-        ModeloSiteDetalhe Get(int id);
+        Task<ModeloSiteDetalhe> GetById(int id);
     }
 }

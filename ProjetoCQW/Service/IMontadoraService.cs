@@ -14,8 +14,6 @@ namespace ProjetoCQW.Service
 
         Task<List<Montadora>> Get();
 
-        Montadora Get(int montadoraId);
-
         Task<Montadora> GetById(int id);
     }
 }

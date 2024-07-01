@@ -60,7 +60,7 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("UrlSite inválido");
             }
 
-            if (id < 0)
+            if (id == 0)
             {
                 throw new IdNotFoundException("Id inválido");
             }
@@ -85,11 +85,6 @@ namespace ProjetoCQW.Service
         public async Task<List<Montadora>> Get()
         {
             return await _context.Montadoras.ToListAsync();
-        }
-
-        public Montadora? Get(int montadoraId)
-        {
-            return _context.Montadoras.Find(montadoraId);
         }
 
         public async Task<Montadora> GetById(int id)

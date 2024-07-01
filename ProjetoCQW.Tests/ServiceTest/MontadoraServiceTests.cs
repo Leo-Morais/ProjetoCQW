@@ -14,25 +14,28 @@ namespace ProjetoCQW.Tests.ServiceTest
 {
     public class MontadoraServiceTests
     {
-        private readonly ConnectionContext _context;
-        private readonly MontadoraService _montadoraService;
 
-
-        public MontadoraServiceTests()
+        private ConnectionContext GetInMemoryContext(string dbName)
         {
-            // Inicializa o banco de dados em memória
             var options = new DbContextOptionsBuilder<ConnectionContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase")
-            .Options;
+                .UseInMemoryDatabase(databaseName: dbName)
+                .Options;
 
-            _context = new ConnectionContext(options);
-            _montadoraService = new MontadoraService(_context);
+            var context = new ConnectionContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            return context;
         }
 
         [Fact]
         public async Task MontadoraService_Add_ReturnsSuccess()
         {
             // Arrange
+
+            var context = GetInMemoryContext(Guid.NewGuid().ToString());
+            var montadoraService = new MontadoraService(context);
+
+
             var montadoraDto = new MontadoraDTO
             {
                 Name = "Teste",
@@ -41,7 +44,7 @@ namespace ProjetoCQW.Tests.ServiceTest
 
 
             // Act
-            var result = await _montadoraService.Add(montadoraDto);
+            var result = await montadoraService.Add(montadoraDto);
 
             // Assert
             Assert.NotNull(result);
@@ -54,20 +57,23 @@ namespace ProjetoCQW.Tests.ServiceTest
         public async Task MontadoraService_Delete()
         {
             // Arrange
+            var context = GetInMemoryContext(Guid.NewGuid().ToString());
+            var montadoraService = new MontadoraService(context);
+
             var montadora = new MontadoraDTO 
             {
                 Name = "Teste",
                 UrlSite = "www.teste.com"
             };
-            var result = await _montadoraService.Add(montadora);
-            await _context.SaveChangesAsync();
+            var result = await montadoraService.Add(montadora);
+            await context.SaveChangesAsync();
 
             // Act
-            await _montadoraService.Delete(result.id);
-            await _context.SaveChangesAsync();
+            await montadoraService.Delete(result.id);
+            await context.SaveChangesAsync();
 
             // Assert
-            var montadoras = await _context.Montadoras.ToListAsync();
+            var montadoras = await context.Montadoras.ToListAsync();
             Assert.DoesNotContain(montadoras, m => m.id == result.id);
         }
 
@@ -75,18 +81,26 @@ namespace ProjetoCQW.Tests.ServiceTest
         [Fact]
         public async Task MontadoraService_Update_ReturnMontadora()
         {
-         
+
             // Arrange
-            var montadora = new MontadoraDTO
+
+            var context = GetInMemoryContext(Guid.NewGuid().ToString());
+            var montadoraService = new MontadoraService(context);
+
+            var montadora = new Montadora 
             {
-                Name = "Teste",
-                UrlSite = "Teste"
+                id = 1, 
+                Nome = "Old", 
+                UrlSite= "www.old.com", 
+                DataAtualizacao = DateTime.Now, 
+                DataCriacao = DateTime.Now 
             };
-            var result = await _montadoraService.Add(montadora);
-            await _context.SaveChangesAsync();
+
+            context.Add(montadora);
+            await context.SaveChangesAsync();
 
             // Act
-            var novoResult = await _montadoraService.Update(result.id, "Teste2", "www.Teste2.com");
+            var novoResult = await montadoraService.Update(1, "Teste2", "www.Teste2.com");
 
             // Assert
             Assert.NotNull(novoResult);
@@ -97,24 +111,30 @@ namespace ProjetoCQW.Tests.ServiceTest
 
 
         [Fact]
-        public async Task MontadoraService_Get_ReturnMontadora()
+        public async Task MontadoraService_GetById_ReturnMontadora()
         {
             // Arrange
-            var montadoraDto = new MontadoraDTO
+            var context = GetInMemoryContext(Guid.NewGuid().ToString());
+            var montadoraService = new MontadoraService(context);
+
+            var montadora = new Montadora
             {
-                Name = "Teste",
+                id = 1,
+                Nome = "Teste",
                 UrlSite = "www.teste.com",
+                DataAtualizacao = DateTime.Now,
+                DataCriacao = DateTime.Now
             };
-            var result = await _montadoraService.Add(montadoraDto);
+            context.Montadoras.Add(montadora);
 
             // Save changes to ensure the ID is generated
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             // Act
-            var montadora = await _montadoraService.GetById(result.id);
+            var result = await montadoraService.GetById(montadora.id);
 
             // Assert
-            result.id.Should().Be(0); // Verifique se o ID foi gerado corretamente
+            result.id.Should().Be(1); // Verifique se o ID foi gerado corretamente
             montadora.id.Should().Be(result.id);
             montadora.Nome.Should().Be("Teste");
             montadora.UrlSite.Should().Be("www.teste.com");

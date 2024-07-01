@@ -53,14 +53,19 @@ namespace ProjetoCQW.Service
             return await _context.ModeloSiteDetalhes.ToListAsync();
         }
 
-        public ModeloSiteDetalhe Get(int id)
+        public async Task<ModeloSiteDetalhe> GetById(int id)
         {
-            return _context.ModeloSiteDetalhes.Find(id);
+            var modeloEncontrado = await _context.ModeloSiteDetalhes.FindAsync(id);
+            if (modeloEncontrado == null)
+            {
+                throw new IdNotFoundException($"Montadora com o ID {id} não encontrada.");
+            }
+            return modeloEncontrado;
         }
 
         public async Task<ModeloSiteDetalhe> Update(int id, ModeloSiteDetalheDTO modeloSiteDetalhe)
         {
-            if (id < 0)
+            if (id == 0)
             {
                 throw new IdNotFoundException("Id Inválido");
             }

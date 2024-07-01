@@ -21,8 +21,8 @@ namespace ProjetoCQW.Service
 
         public async Task<ModeloCarro> Add(ModeloCarroDTO modeloCarro)
         {
-            var montadora = _montadoraService.Get(modeloCarro.Montadora_Id);
-            var modeloSite = _modeloSiteDetalheService.Get(modeloCarro.ModeloSite_Id);
+            var montadora = _montadoraService.GetById(modeloCarro.Montadora_Id);
+            var modeloSite = _modeloSiteDetalheService.GetById(modeloCarro.ModeloSite_Id);
 
             var carro = new ModeloCarro()
             {
@@ -60,10 +60,15 @@ namespace ProjetoCQW.Service
             return await _context.ModeloCarros.ToListAsync();
         }
 
-        //public ModeloCarro? Get(int modeloCarroId)
-        //{
-        //    return _context.ModeloCarros.Find(modeloCarroId);
-        //}
+        public async Task<ModeloCarro> GetById(int modeloCarroId)
+        {
+            var modeloEncontrado = await _context.ModeloCarros.FindAsync(modeloCarroId);
+            if (modeloEncontrado == null)
+            {
+                throw new IdNotFoundException($"Montadora com o ID {modeloCarroId} não encontrada.");
+            }
+            return modeloEncontrado;
+        }
 
         public async Task<ModeloCarro> Update(int id, ModeloCarroDTO modeloCarroDTO)
         {
@@ -98,12 +103,12 @@ namespace ProjetoCQW.Service
                 throw new WrongPropertyException("Valor Inválido");
             }
 
-            if (modeloCarroDTO.Montadora_Id < 0)
+            if (modeloCarroDTO.Montadora_Id == 0)
             {
                 throw new IdNotFoundException("Montadora Id inválido");
             }
 
-            if (modeloCarroDTO.ModeloSite_Id < 0)
+            if (modeloCarroDTO.ModeloSite_Id == 0)
             {
                 throw new IdNotFoundException("ModeloSite Id inválido");
             }
