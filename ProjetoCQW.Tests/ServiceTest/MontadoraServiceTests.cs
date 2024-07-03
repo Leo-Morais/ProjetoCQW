@@ -140,6 +140,41 @@ namespace ProjetoCQW.Tests.ServiceTest
             montadora.UrlSite.Should().Be("www.teste.com");
         }
 
+        [Fact]
+        public async Task MontadoraService_Get_ReturnsList()
+        {
+            // Arrange
+            var context = GetInMemoryContext(Guid.NewGuid().ToString());
+            var montadoraService = new MontadoraService(context);
+
+            var montadora = new List<Montadora>
+            {
+                new Montadora
+                {
+                    id = 1,
+                    Nome = "Teste",
+                    UrlSite = "www.teste.com",
+                    DataAtualizacao = DateTime.Now,
+                    DataCriacao = DateTime.Now
+                },
+                new Montadora
+                {
+                   id = 2,
+                    Nome = "Teste2",
+                    UrlSite = "www.teste2.com",
+                    DataAtualizacao = DateTime.Now,
+                    DataCriacao = DateTime.Now
+                },
+            };
+            context.Montadoras.AddRange(montadora);
+            await context.SaveChangesAsync();
+            // Act
+            var result = await montadoraService.Get();
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
     }
 
 
